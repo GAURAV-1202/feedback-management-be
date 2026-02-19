@@ -1,0 +1,20 @@
+---
+trigger:
+  - master
+pool:
+  name: Default
+  demands:
+    - Agent.Name -equals vm3
+    - maven
+steps:
+  - script: |
+      java -version
+      echo %JAVA_HOME%
+    displayName: Verify Java Version
+  - task: Maven@3
+    inputs:
+      mavenPomFile: pom.xml
+      mavenOptions: -Xmx3072m
+      publishJUnitResults: true
+      testResultsFiles: "*/surefire-reports/TEST-.xml"
+      goals: package -DskipTests=true
